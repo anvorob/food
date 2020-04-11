@@ -1,0 +1,207 @@
+body{
+  font-family: 'Roboto', sans-serif;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons");
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.item-title { grid-area: title; }
+.item-description { grid-area: description; }
+.item-serves { grid-area: serves; }
+.item-cuisine { grid-area: cuisine; }
+.item-categories {grid-area: categories; }
+.item-cookingT { grid-area: cookingT; }
+.item-preparationT { grid-area: preparationT; }
+.item-tags { grid-area: tags; }
+.item-ingredients { grid-area: ingredients; }
+.item-steps { grid-area: steps; }
+.item-nutrition { grid-area: nutrition; }
+.item-images { grid-area: images; }
+.item-alergens { grid-area: alergens; }
+.item-submit { grid-area: submit; }
+
+.recipeWrapper{
+  /* text-align: left; */
+  display: grid;
+  grid-template-areas:
+    'title title title'
+    'description description description'
+    'serves cookingT preparationT'
+    'cuisine cuisine cuisine'
+    'categories categories categories'
+    'ingredients ingredients ingredients'
+    'alergens alergens alergens'
+    'steps steps steps'
+    'nutrition nutrition nutrition'
+    'tags tags tags'
+    'images images images'
+    'submit submit submit';
+  background-color: #2196F3;
+}
+
+.recipeWrapper > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  padding: 7px 16px;
+  font-size: 20px;
+}
+
+.categoryBox{
+    display: inline;
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #d5efef;
+    margin: 2px;
+}
+
+.sectionBox{
+  width: 33%;
+  float: left;
+}
+
+.underline{
+  width: 100%;
+  font-size: 12px;
+}
+
+.underline div{
+  display: inline;
+  margin-left: 5px;
+}
+
+.underline span{
+  font-weight: bold;
+  
+}
+
+.tagWrapper{
+    border: 1px solid black;
+    display: inline-flex;
+    align-content: center;
+    justify-content: center;
+    min-width: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 1.84615385;
+    background-color: #c8c8c8;
+    margin: 0px 4px 0px 4px;
+}
+
+.recipeWrapper textarea{
+  width: 100%;
+  height: 200px;
+}
+.tagDelete{
+  color: inherit;
+    display: flex;
+    align-content: center;
+    align-self: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+    padding: 1px;
+    border-radius: 3px;
+    cursor: pointer;
+
+}
+
+.tageDelete:hover{
+  cursor: pointer;
+  background-color: #e1e1e1;
+}
+
+.tag-clear{
+  font-size: 16px;
+}
+
+.recipeWrapper input,textarea{
+  border-width: 0px;
+  border-radius: 3px;
+  padding: 7px;
+  font-size: 17px;
+}
+.recipeWrapper input[type=number]
+{
+  width: 40px;
+}
+
+.transparent {
+  background: transparent;
+}
+
+.btn{
+  border: 1px solid green;
+  background: #2cb16f;
+  padding: 5px 15px 5px 15px;
+  border-radius: 3px;
+  color: whitesmoke;
+  text-shadow: 0px 1px black;
+  cursor: pointer;
+}
+
+.stashedList{
+  display: inline-grid;
+}
+
+.tagsArea{
+  background-color: #4e63784d;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+input:focus{
+  outline: 0px;
+}
+
+.recipePreview{
+  text-align: left;
+}
