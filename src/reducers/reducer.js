@@ -1,9 +1,7 @@
-import {FETCH_RECIPIES,FETCH_RECIPE,FETCH_CATEGORIES} from '../actions/types';
+import {FETCH_RECIPIES,FETCH_RECIPE,SAVE_RECIPE,DELETE_RECIPE,FETCH_CATEGORIES} from '../actions/types';
 
 const initialState = {
-    currency: [],
-    baseCurrency: "",
-    mutualFunds:[]
+    
   };
 
 export default function(state = initialState, action) {
@@ -23,8 +21,25 @@ export default function(state = initialState, action) {
             recipe: action.payload
         };
        
-
+        case SAVE_RECIPE:
+            console.log(action);
+            return {
+                ...state,
+                srecipe: action.payload
+            };
            
+        case DELETE_RECIPE:
+            console.log(action);
+            return {
+                ...state,
+                srecipe: action.payload
+            };
+        case FETCH_CATEGORIES:
+            console.log(action);
+            return {
+                ...state,
+                categories: action.payload
+            };
         default:
         return state;
     }

@@ -1,19 +1,25 @@
 body{
   font-family: 'Roboto', sans-serif;
   width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+  margin:0 auto 0 auto;
+  height: 100vh;
 }
 
 .App {
-  text-align: center;
+  height: 100vh;
+    background-position: top;
+    background-repeat: no-repeat;
+    text-align: center;
+    /* background-image: url(https://i0.wp.com/images-prod.healthline.com/hlcmsresource/images/AN_images/healthy-eating-ingredients-1296x728-header.jpg?w=1155&h=1528); */
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+a{
+  text-decoration: none;
+}
 
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons");
 
@@ -48,8 +54,18 @@ body{
   }
 }
 
-.item-title { grid-area: title; }
-.item-description { grid-area: description; }
+.Collection a{
+  color: inherit;
+  text-shadow: -1px 1px #dedede;
+}
+.item-title 
+{ grid-area: title; 
+  position: relative;
+}
+.item-description { 
+  grid-area: description;
+  padding-bottom: 15px; 
+}
 .item-serves { grid-area: serves; }
 .item-cuisine { grid-area: cuisine; }
 .item-categories {grid-area: categories; }
@@ -67,28 +83,71 @@ body{
   /* text-align: left; */
   display: grid;
   grid-template-areas:
-    'title title title'
+    'title cuisine cuisine'
     'description description description'
     'serves cookingT preparationT'
-    'cuisine cuisine cuisine'
-    'categories categories categories'
-    'ingredients ingredients ingredients'
-    'alergens alergens alergens'
-    'steps steps steps'
-    'nutrition nutrition nutrition'
-    'tags tags tags'
+    'categories tags alergens'
+    'ingredients steps nutrition'
     'images images images'
     'submit submit submit';
-  background-color: #2196F3;
+  background-color: #e8edf2b3;
+  padding: 10px 0px 10px 0px;
 }
 
 .recipeWrapper > div {
-  background-color: rgba(255, 255, 255, 0.8);
   text-align: left;
   padding: 7px 16px;
   font-size: 20px;
 }
 
+.divider1 { grid-area: divider1; }
+.divider2 { grid-area: divider2; }
+.divider3 { grid-area: divider3; }
+.divider4 
+{
+   grid-area: divider4; 
+   height: 40px;
+}
+
+.item-title h1{
+  margin-top: 0;
+  display: inline-flex;
+}
+.edit-link{
+    position: absolute;
+    right: 0px;
+    color: #0000005c;
+}
+
+.edit-link:hover{
+  color:#0000008a;
+}
+.recipeDetailsWrapper
+{
+  text-align: left;
+  display: grid;
+  grid-column-gap: 20px;
+  padding: 25px;
+  grid-template-areas:
+    'images images title title title'
+    'images images description description description'
+    'images images divider1 divider1 divider1'
+    'images images serves serves serves'
+    'images images cookingT cookingT cookingT'
+    'images images preparationT preparationT preparationT'
+    'images images cuisine cuisine cuisine'
+    'images images divider3 divider3 divider3'
+    'images images categories categories categories'
+    'images images alergens alergens alergens'
+    'divider4 divider4 divider4 divider4 divider4'
+    'steps steps steps ingredients ingredients'
+    'steps steps steps nutrition nutrition';
+  background-color: #e8edf2b3;
+}
+
+.recipeDetailsWrapper .tagWrapper{
+  padding-right: 4px;
+}
 .categoryBox{
     display: inline;
     border: 1px solid black;
@@ -98,6 +157,16 @@ body{
     margin: 2px;
 }
 
+.item-images img {
+  border: 1px solid #979797;
+  padding: 4px;
+  background: white;
+  border-radius: 5px;
+}
+
+.item-tags input, .item-categories input, .item-alergens input{
+  width: 100%;
+}
 .sectionBox{
   width: 33%;
   float: left;
@@ -118,11 +187,15 @@ body{
   
 }
 
+.section-title {
+  margin-bottom: 5px;
+}
+
 .tagWrapper{
-    border: 1px solid black;
+    border: 1px solid #979797;
     display: inline-flex;
     align-content: center;
-    justify-content: center;
+    /* justify-content: center; */
     min-width: 0;
     padding-left: 4px;
     padding-right: 4px;
@@ -132,7 +205,9 @@ body{
     font-size: 12px;
     line-height: 1.84615385;
     background-color: #c8c8c8;
-    margin: 0px 4px 0px 4px;
+    margin: 0px 4px 5px 4px;
+    position: relative;
+    padding-right: 20px;
 }
 
 .recipeWrapper textarea{
@@ -151,7 +226,8 @@ body{
     padding: 1px;
     border-radius: 3px;
     cursor: pointer;
-
+    position: absolute;
+    right: 0;
 }
 
 .tageDelete:hover{
@@ -171,7 +247,7 @@ body{
 }
 .recipeWrapper input[type=number]
 {
-  width: 40px;
+  width: 70px;
 }
 
 .transparent {
@@ -198,10 +274,137 @@ body{
     border-radius: 3px;
 }
 
+.tagsPreviewArea{
+  padding: 5px;
+}
 input:focus{
   outline: 0px;
 }
 
 .recipePreview{
   text-align: left;
+}
+
+.menubtn{
+  text-transform: uppercase;
+    padding: 5px;
+    margin: 10px 0px 10px 0px;
+    display: block;
+    float: left;
+    color: whitesmoke;
+}
+
+.menubtn-active{
+  border-bottom: 1px solid #d9d9d9;
+}
+.Header{
+    height: 50px;
+    background: #3b3b3bed;
+    position: relative;
+}
+
+.Header-links{
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-flex;
+}
+
+.link-btn
+{
+  position: absolute;
+  display: inline;
+  right: 0px;
+  margin: 9px 10px 9px 0px;
+  background: whitesmoke;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.link-btn a{
+  color:black;
+}
+
+.Footer{
+  height: 50px;
+    background: #3b3b3bed;
+}
+
+.recipesWrapper{
+  /* background: #f2f2f278; */
+  padding: 6px;
+  width: 100%;
+  background: silver;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  height: 100%;
+}
+
+.Collection
+{
+  text-align: left;
+  background: silver;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 25px;
+  padding-right: 25px;
+  overflow: auto;
+}
+
+.Category{
+  text-align: left;
+    background: silver;
+  height: inherit;
+  display: block;
+  padding: 20px 10px;
+}
+
+.Category > .title{
+  text-align: left;
+  margin-left: 20px;
+  text-transform: capitalize;
+  text-shadow: -1px 1px #dedede;
+}
+
+.RecipeList{
+  overflow-y: auto;
+  height: inherit;
+}
+/*  COLLECTION PAGE CSS BEGIN */
+.recipe-card{
+  max-width: 345px;
+  float: left;
+  margin: 12px 15px 0px 15px;
+  text-align: left;
+}
+
+/*  COLLECTION PAGE CSS END */
+
+
+.list-item{
+  float: left;
+  text-align: center;
+  height: 200px;
+  margin-left: 19px;
+}
+.collection-Item{
+  display: flow-root;
+}
+.collection-Item > h1{
+  text-shadow: -1px 1px #dedede;
+}
+
+.list-item img{
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 1px solid #939393;
+  padding: 2px;
+  background: #dbdbdb;
+  object-fit: cover;
+}
+
+
+.MuiButtonBase-root{
+  max-height: 313px;
+  overflow: hidden;
 }

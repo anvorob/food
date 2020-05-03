@@ -1,26 +1,91 @@
 import React,{Component} from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { fetchCategories } from '../actions/actions';
+import Category from './Category';
+import Loading from './Loading';
 
-import Recipes from './Recipes';
 class Collection extends Component 
 {
     constructor(){
         super();
         
     }
-    componentWillMount(){
-        
+    componentWillMount() 
+    {
+        this.props.fetchCategories();   
     }
     
     render(){
-        
-        return (
-            <div className="Collection">
-                <Recipes/>
+        console.log(this.props.posts);
+        let categoryList = [];
+        let dietList=[];
+        let cuisineList=[];
+        if(this.props.posts==undefined){
 
+        }else{
+            // for(let [key, value] of Object.entries(this.props.posts.cuisineList)) 
+            //     cuisineList.push(<Category title={key} recipeList={value} />);
+            // for(let [key, value] of Object.entries(this.props.posts.dietList)) 
+            //     dietList.push(<Category title={key} recipeList={value} />);
+            // for(let [key, value] of Object.entries(this.props.posts.categoryList)) 
+            //     categoryList.push(<Category title={key} recipeList={value} />);
+            
+            for(let [key, value] of Object.entries(this.props.posts.cuisineList)) 
+                cuisineList.push(<div className="list-item">
+                    <Link to={'/collection/cuisine/'+key}>
+                        <img src={value[0].image} />
+                        <h3>{key}</h3>
+                    </Link>
+                </div>);
+            for(let [key, value] of Object.entries(this.props.posts.dietList)) 
+                dietList.push(<div className="list-item">
+                     <Link to={'/collection/diet/'+key}>
+                        <img src={value[0].image} />
+                        <h3>{key}</h3>
+                    </Link>
+                </div>);
+            for(let [key, value] of Object.entries(this.props.posts.categoryList)) 
+                categoryList.push(<div className="list-item">
+                    <Link  to={'/collection/category/'+key}>
+                        <img src={value[0].image} />
+                        <h3>{key}</h3>
+                    </Link>
+                </div>);
+        }
+        return (
+            (this.props.posts==undefined)?
+            <Loading />
+            :
+            <div className="Collection">
+                {/* {categoryList}
+                {dietList}
+                {cuisineList} */}
+
+                    <div className="collection-Item">
+                        <h1>By Cuisines</h1>
+                        {cuisineList}
+                    </div>
+                    <div className="collection-Item">
+                        <h1>By Category</h1>
+                        {categoryList}
+                    </div>
+                    <div className="collection-Item">
+                        <h1>By Diet</h1>
+                        {dietList}
+                    </div>
             </div>
         );
     }
 }
 
-export default Collection;
+
+// Collection.propTypes={
+//     posts: PropTypes.array.isRequired
+// }
+const mapStateToProps = state=>({
+    posts: state.posts.categories,
+    
+});
+export default connect(mapStateToProps,{fetchCategories})(Collection);

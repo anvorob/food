@@ -2,42 +2,53 @@ import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { fetchRecipe } from '../actions/actions';
-
+import Button from '@material-ui/core/Button';
+import Loading from './Loading';
 
 class RecipeForm extends Component{
     
     constructor(){
         super();
         this.state={
-            title : "",
+            name : "",
             description : "",
-            serves : 0,
-            cuisisne  : "",
-            categories : [],
-            cookingT : 0,
-            preparationT : 0,
+            NumberOfServings : 0,
+            Cuisine  : "",
+            Categories : [],
+            CookTime : 0,
+            PrepTime : 0,
             tags : [],
-            ingredients : [],
-            steps : [],
-            nutrition : [],
-            images : [],
-            alergens : [],
+            IngredientList : [],
+            Instructions : [],
+            Nutrition : [],
+            Image : "",
+            DietList : [],
         }
+        this.onNutritionChange = this.onNutritionChange.bind(this);
+        this.onNutritionSave = this.onNutritionSave.bind(this);
     }
-    componentDidMount() {
+    componentWillMount() {
         
         if(this.props.match !=null && "oid" in this.props.match.params)
         {
             this.props.fetchRecipe([this.props.match.params.oid]);
             
-            
         }
+        
+    }
+
+    componentDidMount(){
+        console.log(this.props)
+        
     }
     onChange=e=>{
-        this.setState({
-            [e.target.name]:e.target.value
-        })
-        console.log(this.state)
+        switch(e.target.type){
+            case "number":  this.setState({[e.target.name] : parseFloat(e.target.value)}); break;
+            case "textarea":
+            case "text":    this.setState({[e.target.name] : e.target.value}); break;
+        }
+        
+        
     }
     onEnter=e=>{
         let name=e.target.name
@@ -47,7 +58,11 @@ class RecipeForm extends Component{
             let nameList=this.state[name];
             if(!this.state[name].includes(value))
             {
-                nameList.push(value);
+                if(name==="Instructions")
+                    nameList.push({"text":value});
+                else
+                    nameList.push({"Id":0,"Name":value});
+
                 this.setState((prevState) => ({
                     [name]:nameList
                 }))
@@ -60,9 +75,113 @@ class RecipeForm extends Component{
         e.preventDefault();
         this.props.onSubmit(this.state);
     }
-    deleteFromList(index,name){
+    onNutritionClick(index,name){
         
+        if(this.state.Nutrition!=null && this.state.Nutrition[index]!=null)
+        {
+            this.setState({
+                nutritionForm:{
+                    Id:this.state.Nutrition[index].Id,
+                    Label:this.state.Nutrition[index].Label,
+                    Code:this.state.Nutrition[index].Code,
+                    Value:this.state.Nutrition[index].Value,
+                    Unit:this.state.Nutrition[index].Unit
+                }});
+        }
+        
+        // this.state[name].splice(index,1); 
+        // this.setState({
+        //     [name]:this.state[name]
+        // })
+    }
+    onNutritionChange(event){
+        let toUpdate=event.target.name;
+        this.setState({
+            nutritionForm:{
+                [toUpdate]:event.target.value
+            }
+        });
+    }
+    
+    onNutritionSave(event){
+        event.preventDefault();
+        let LocalNutrition={};
+        let stateNutrition=this.state.Nutrition;
+        for(let element of event.target.elements)
+        {
+            switch(element.type){
+                case "number":LocalNutrition[element.name] =parseFloat(element.value); break;
+                case "text":LocalNutrition[element.name] =element.value; break;
 
+            }
+        }
+        if(LocalNutrition.Id>0)
+        {
+            let searchObj = stateNutrition.find(item=>item.Id==LocalNutrition.Id);
+            let index = stateNutrition.indexOf(searchObj);
+            stateNutrition[index]=LocalNutrition;
+        }
+        else
+        {
+            stateNutrition.push(LocalNutrition)
+        }
+        this.setState({
+            Nutrition:stateNutrition
+        })
+        this.setState({
+            nutritionForm:{Id:0,
+                Label:"",
+                Code:"",
+                Value:0,
+                Unit:""
+            }
+        });
+    }
+    
+    onIngredientChange(event){
+        let toUpdate=event.target.name;
+        this.setState({
+            ingredientForm:{
+                [toUpdate]:event.target.value
+            }
+        });
+    }
+
+    onIngredientSave(event)
+    {
+        event.preventDefault();
+        let LocalIngredientList={};
+        let stateIngredientList=this.state.IngredientList;
+        for(let element of event.target.elements)
+        {
+            switch(element.type){
+                case "number":LocalIngredientList[element.name] =parseFloat(element.value); break;
+                case "text":LocalIngredientList[element.name] =element.value; break;
+
+            }
+        }
+        if(LocalIngredientList.Id>0)
+        {
+            let searchObj = stateIngredientList.find(item=>item.Id==LocalIngredientList.Id);
+            let index = stateIngredientList.indexOf(searchObj);
+            stateIngredientList[index]=LocalIngredientList;
+        }
+        else
+        {
+            stateIngredientList.push(LocalIngredientList)
+        }
+        this.setState({
+            IngredientList:stateIngredientList
+        })
+        this.setState({
+            ingredientForm:{Id:0,
+                Product:"",
+                Quantity:0,
+                Units:""
+            }
+        });
+    }
+    deleteFromList(index,name){
         this.state[name].splice(index,1); 
         this.setState({
             [name]:this.state[name]
@@ -72,59 +191,67 @@ class RecipeForm extends Component{
 
 
     render(){
+        
         console.log(this.props)
-        if(this.props.posts!=null)
-        {
-            
-            
-            // tags : [],
-            
-            // nutrition : [],
-            // images : [],
-            // alergens 
+        if(this.props.posts!=null && this.state.name==="")
+            {
+               
+                // tags : [],
+                
+                
+                // alergens 
 
-            this.state={
-                title : this.props.posts.name,
-                description : this.props.posts.description,
-                ingredients : this.props.posts.ingredients.map(ingr=>ingr.text),
-                serves : this.props.posts.numberOfServings,
-                cookingT : this.props.posts.durations.cookTime,
-                steps:this.props.posts.instructions.steps.map(step=>step.text),
-                categories : this.props.posts.labels.category.map(cat=>cat.displayName),
-                cuisisne:this.props.posts.labels.cuisine.map(cuise=>cuise.displayName)
-            };
-            
-        }
+                this.setState({
+                    id:this.props.posts.id,
+                    name : this.props.posts.name,
+                    description : this.props.posts.description,
+                    IngredientList : this.props.posts.IngredientList,
+                    NumberOfServings : this.props.posts.NumberOfServings,
+                    CookTime : this.props.posts.CookTime,
+                    PrepTime: this.props.posts.PrepTime,
+                    Instructions:JSON.parse( this.props.posts.Instructions),
+                    Categories : this.props.posts.Categories,
+                    Cuisine:this.props.posts.Cuisine,
+                    Nutrition : this.props.posts.Nutrition,
+                    MealTypeList : this.props.posts.MealTypeList,
+                    DietList : this.props.posts.DietList,
+                    Image:this.props.posts.Image
+                });
+                
+            }
         return (
-            
+            (this.props.posts==null && false)?
+            <Loading />:
             <div className="recipeWrapper">
                 
-                    <div className="item-title">Title: <input type="text" name="title" onChange={e=>this.onChange(e)} value={this.state.title}/></div>
+                    <div className="item-title">Title: <input type="text" name="name" onChange={e=>this.onChange(e)} value={this.state.name}/></div>
                     <div className="item-description">Description: <textarea name="description" onChange={e=>this.onChange(e)} value={this.state.description}></textarea></div>
-                    <div className="item-serves">Serves: <input type="number" name="serves" onChange={e=>this.onChange(e)} value={this.state.serves}/></div>
-                    <div className="item-cuisine">Cuisine: <input type="text" name="cuisisne" onChange={e=>this.onChange(e)} value={this.state.cuisisne}/></div>
+                    <div className="item-serves">Serves: <input type="number" name="NumberOfServings" min="1" onChange={e=>this.onChange(e)} value={this.state.NumberOfServings}/></div>
+                    <div className="item-cuisine">Cuisine: <input type="text" name="Cuisine" onChange={e=>this.onChange(e)} value={this.state.Cuisine}/></div>
 
 
-                    <div className="item-categories">Categories:<br/>
+                    <div className="item-categories">
+                        <div className="section-title">Categories:</div>
                         <div className="tagsArea">
-                            {(this.state!=null && this.state.categories!=null)?this.state.categories.map((cat,index)=>
-                                    <div className="tagWrapper">{cat} 
-                                        <span className="tagDelete" onClick={()=>this.deleteFromList(index,"categories")}>
+                            {(this.state!=null && this.state.Categories!=null)?this.state.Categories.map((cat,index)=>
+                                    <div key={index} id={cat.Id} className="tagWrapper">{cat.Name} 
+                                        <span className="tagDelete" onClick={()=>this.deleteFromList(index,"Categories")}>
                                             <i className="material-icons tag-clear">clear</i>
                                         </span>
                                 </div>):""}
-                            <input type="text" className="transparent" name="categories" onKeyDown={this.onEnter}/>
+                            <input type="text" className="transparent" name="Categories" onKeyDown={this.onEnter}/>
                         </div>
                     </div>
 
-                    <div className="item-cookingT">Cooks in: <input type="number" name="cookingT" onChange={e=>this.onChange(e)} value={this.state.cookingT}/></div>
-                    <div className="item-preparationT">Preparation time: <input type="number" name="preparationT" onChange={e=>this.onChange(e)} value={this.state.preparationT}/></div>
+                    <div className="item-cookingT">Cooks in: <input type="number" name="CookTime" min="1" onChange={e=>this.onChange(e)} value={this.state.CookTime}/></div>
+                    <div className="item-preparationT">Preparation time: <input type="number" name="PrepTime" min="1" onChange={e=>this.onChange(e)} value={this.state.PrepTime}/></div>
 
 
-                    <div className="item-tags">Tags: <br/>
+                    <div className="item-tags">
+                        <div className="section-title">Tags: </div>
                         <div className="tagsArea">
                             {(this.state!=null && this.state.tags!=null)?this.state.tags.map((tag,index)=>
-                                <div className="tagWrapper">{tag} 
+                                <div key={index} className="tagWrapper">{tag.Name} 
                                     <span className="tagDelete" onClick={()=>this.deleteFromList(index,"tags")}>
                                         <i className="material-icons tag-clear">clear</i>
                                     </span>
@@ -135,55 +262,109 @@ class RecipeForm extends Component{
 
                     
                     <div className="item-ingredients">Ingredients: 
+                    <br/>
                             <ul className="stashedList">
-                                {(this.state!=null && this.state.ingredients!=null)?this.state.ingredients.map((ingredient,index)=>
-                                    <li className="tagWrapper">{ingredient} 
-                                        <span className="tagDelete" onClick={()=>this.deleteFromList(index,"ingredients")}>
+                                {(this.state!=null && this.state.IngredientList!=null)?this.state.IngredientList.map((ingredient,index)=>
+                                    <li key={index} className="tagWrapper">{ingredient.Quantity + "("+ingredient.Units+") x "+ingredient.Product  } 
+                                        <span className="tagDelete" onClick={()=>this.deleteFromList(index,"IngredientList")}>
                                             <i className="material-icons tag-clear">clear</i>
                                         </span>
                                     </li>):""}
+                                    <li style={{display:"inline-flex"}}>
+                                        {/* <input style={{width: "100%"}} type="text" name="IngredientList" onKeyDown={this.onEnter}/> */}
+                                        <form className="nutrition-edit" onSubmit={this.onIngredientSave}>
+                                            <table>
+                                                <tr hidden>
+                                                    <td >Id:</td><td><input id="nutrition-id" name="Id" type="number" value={this.state.ingredientForm?this.state.ingredientForm.Id:0}/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Product:</td><td><input id="nutrition-label" name="Product" type="text" value={this.state.ingredientForm?this.state.ingredientForm.Product:""} onChange={this.onNutritionChange}/></td>
+                                                </tr>
+                                               
+                                                <tr>
+                                                    <td colSpan="2"><span>Quantity:</span><input id="nutrition-value" name="Quantity" type="number"  value={this.state.ingredientForm?this.state.ingredientForm.Quantity:0} onChange={this.onNutritionChange}/>
+                                                    <span style={{marginLeft:"7px",marginRight:"14px"}}>Units:</span><input id="nutrition-unit" style={{width: "70px"}} name="Units" type="text" max="10"  value={this.state.ingredientForm?this.state.ingredientForm.Units:""} onChange={this.onNutritionChange} /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><Button type="submit">Save</Button></td><td><Button type="reset">Clear</Button></td>
+                                                </tr>
+                                            </table>
+                                        </form>
+                                    </li>
                             </ul>
-                            <br/>   
-                        <input type="text" name="ingredients" onKeyDown={this.onEnter}/>
+                            
                     </div>
 
                         
                     <div className="item-steps">Steps: 
-                        <ul className="stashedList">
-                            {(this.state!=null && this.state.steps!=null)?this.state.steps.map((step,index)=>
-                                <li className="tagWrapper">[{index+1}] {step} 
-                                    <span className="tagDelete" onClick={()=>this.deleteFromList(index,"steps")}>
+                        <ol className="stashedList">
+                            {(this.state!=null && this.state.Instructions!=null)?this.state.Instructions.map((step,index)=>
+                                <li key={index} className="tagWrapper">[{index+1}] {step.text} 
+                                    <span className="tagDelete" onClick={()=>this.deleteFromList(index,"Instructions")}>
                                         <i className="material-icons tag-clear">clear</i>
                                     </span>
                                 </li>):""}
-                        </ul>
-                            <br/>
-                        <input type="text" name="steps" onKeyDown={this.onEnter}/>
+                                <li style={{display:"inline-flex",width: "100%"}}><input style={{width: "100%"}} type="text" name="Instructions" onKeyDown={this.onEnter}/></li>
+                        </ol>
+                           
+                        
                     </div>
 
                     
                     <div className="item-nutrition">Nutrition: 
-                        {(this.state!=null && this.state.nutrition!=null)?this.state.nutrition.map((nutr,index)=>
-                            <div className="tagWrapper">{nutr} 
-                                <span className="tagDelete" onClick={()=>this.deleteFromList(index,"nutrition")}>
+                    <br/>
+                    <span style={{height:"20px",display: "block"}}></span>
+                        {(this.state!=null && this.state.Nutrition!=null)?this.state.Nutrition.map((nutr,index)=>
+                            <div key={index} className="tagWrapper">
+                                <div onClick={()=>this.onNutritionClick(index,"nutrition")}>{nutr.Label+ " ["+nutr.Code+"] "+nutr.Value+" "+nutr.Unit} </div>
+                                <span className="tagDelete" onClick={()=>this.deleteFromList(index,"Nutrition")}>
                                     <i className="material-icons tag-clear">clear</i>
                                 </span>
                             </div>):""}
-                        <input type="text" className="transparent" name="nutrition" onKeyDown={this.onEnter}/>
+                        {/* <input type="text" className="transparent" name="Nutrition" onKeyDown={this.onEnter}/> */}
+                        <form className="nutrition-edit" onSubmit={this.onNutritionSave}>
+                            <table>
+                                <tr hidden>
+                                    <td >Id:</td><td><input id="nutrition-id" name="Id" type="number" value={this.state.nutritionForm?this.state.nutritionForm.Id:0}/></td>
+                                </tr>
+                                <tr>
+                                    <td>Label:</td><td><input id="nutrition-label" name="Label" type="text" value={this.state.nutritionForm?this.state.nutritionForm.Label:""} onChange={this.onNutritionChange}/></td>
+                                </tr>
+                                <tr>
+                                    <td>Code:</td><td><input id="nutrition-code" name="Code" type="text" value={this.state.nutritionForm?this.state.nutritionForm.Code:""}  onChange={this.onNutritionChange}/></td>
+                                </tr>
+                                <tr>
+                                    <td colSpan="2"><span style={{marginRight:"14px"}}>Value:</span><input id="nutrition-value" name="Value" type="number"  value={this.state.nutritionForm?this.state.nutritionForm.Value:0} onChange={this.onNutritionChange}/>
+                                    <span style={{marginLeft:"7px",marginRight:"14px"}}>Unit:</span><input id="nutrition-unit" style={{width: "70px"}} name="Unit" type="text" max="10"  value={this.state.nutritionForm?this.state.nutritionForm.Unit:""} onChange={this.onNutritionChange} /></td>
+                                </tr>
+                                <tr>
+                                    <td><Button type="submit">Save</Button></td><td><Button type="reset">Clear</Button></td>
+                                </tr>
+                            </table>
+                        </form>
                     </div>
 
-                    <div className="item-images">Image url: <input type="text" name="images" onChange={e=>this.onChange(e)}/></div>
+                    <div className="item-images">
+                        {(this.state.Image!=="")?
+                        <img src={this.state.Image} />
+                        :""
+                        }
+                        <div className="image-url">
+                            Image url: <input type="text" name="Image" value={this.state.Image} onChange={e=>this.onChange(e)}/>
+                        </div>
+                    </div>
 
                         
-                    <div className="item-alergens">Alergens: <br/>
+                    <div className="item-alergens">
+                        <div className="section-title">Diet: </div>
                         <div className="tagsArea">
-                            {(this.state!=null && this.state.alergens!=null)?this.state.alergens.map((alergen,index)=>
-                                <div className="tagWrapper">{alergen} 
-                                    <span className="tagDelete" onClick={()=>this.deleteFromList(index,"alergens")}>
+                            {(this.state!=null && this.state.DietList!=null)?this.state.DietList.map((alergen,index)=>
+                                <div key={index} className="tagWrapper">{alergen.Name} 
+                                    <span className="tagDelete" onClick={()=>this.deleteFromList(index,"DietList")}>
                                         <i className="material-icons tag-clear">clear</i>
                                     </span>
                                 </div>):""}
-                            <input type="text" className="transparent" name="alergens" onKeyDown={this.onEnter}/>
+                            <input type="text" className="transparent" name="DietList" onKeyDown={this.onEnter}/>
                         </div>
                     </div>
                     <div className="item-submit">
@@ -200,6 +381,21 @@ RecipeForm.propTypes={
     posts: PropTypes.array.isRequired
 }
 const mapStateToProps = state=>({
-    posts: state.posts.recipe
+    posts: state.posts.recipe,
+    
+    // title : (state.posts.recipe)? state.posts.recipe.name:"",
+    // description : (state.posts.recipe)? state.posts.recipe.description:"",
+    // ingredients : (state.posts.recipe)? state.posts.recipe.IngredientList:"",
+    // serves : (state.posts.recipe)? state.posts.recipe.NumberOfServings:"",
+    // cookingT : (state.posts.recipe)? state.posts.recipe.CookTime:"",
+    // preparationT:(state.posts.recipe)?  state.posts.recipe.PrepTime:"",
+    // steps:(state.posts.recipe)? JSON.parse( state.posts.recipe.Instructions).map(step=>step.text):"",
+    // categories : (state.posts.recipe)? state.posts.recipe.Categories.map(cat=>cat.Name):"",
+    // cuisisne:(state.posts.recipe)? state.posts.recipe.Cuisine:"",
+    // nutrition :(state.posts.recipe)?  state.posts.recipe.Nutrition:"",
+    // tags :(state.posts.recipe)?  state.posts.recipe.MealTypeList:"",
+    // diets :(state.posts.recipe)?  state.posts.recipe.DietList:"",
+        
+    
 });
 export default connect(mapStateToProps,{fetchRecipe})(RecipeForm);

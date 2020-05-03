@@ -1,43 +1,64 @@
 import {FETCH_RECIPIES,
-    FETCH_RECIPE,
+    FETCH_RECIPE,SAVE_RECIPE,
     FETCH_CATEGORIES} from './types';
-import tickersList1 from '../assets/recepes.json';
 
+
+let baseUrl = "https://vorobiovcompanyapi.azurewebsites.net/v1/Recipe/";
+let localUrl = "https://localhost:44320/v1/Recipe/";
+let proxyUrl = "https://cors-anywhere.herokuapp.com/";
     export const fetchRecipies=()=>dispatch=>{
         console.log("fetchRecipies")
-        console.log(tickersList1.recipies);
-        dispatch({
-                    type: FETCH_RECIPIES,
-                    payload: tickersList1.recipies
-                  })
-        // fetch("https://api.spoonacular.com/recipes/search?query=cheese&number=2&apiKey=3262298f26124a46a17ff9ada1b84230")
-        //     .then(res=>res.json()).then(post=>dispatch({
-        //         type: FETCH_RECIPIES,
-        //         payload: post
-        //       }));
+        
+        fetch(proxyUrl+baseUrl)
+            .then(res=>res.json()).then(post=>dispatch({
+                type: FETCH_RECIPIES,
+                payload: post
+              }));
     };
 
-    export const fetchRecipe=()=>dispatch=>{
+    export const fetchRecipe=(recipeID)=>dispatch=>{
         console.log("fetchRecipe")
         
-        dispatch({
-                    type: FETCH_RECIPE,
-                    payload: tickersList1.recipies[0]
-                  })
-        // fetch("https://api.spoonacular.com/recipes/search?query=cheese&number=2&apiKey=3262298f26124a46a17ff9ada1b84230")
-        //     .then(res=>res.json()).then(post=>dispatch({
-        //         type: FETCH_RECIPIES,
-        //         payload: post
-        //       }));
+        fetch(proxyUrl+baseUrl+recipeID)
+            .then(res=>res.json()).then(post=>dispatch({
+                type: FETCH_RECIPE,
+                payload: post
+              }));
     };
 
     export const saveRecipe=(recipeObj)=>dispatch=>{
-        console.log("saveRecipe")
         
-        console.log(recipeObj);
-        // fetch("https://api.spoonacular.com/recipes/search?query=cheese&number=2&apiKey=3262298f26124a46a17ff9ada1b84230")
+        console.log("saveRecipe",recipeObj);
+        // fetch(proxyUrl+baseUrl,{
+        //     method: 'post',
+        //     body: JSON.stringify(recipeObj)
+        //   })
         //     .then(res=>res.json()).then(post=>dispatch({
-        //         type: FETCH_RECIPIES,
+        //         type: SAVE_RECIPE,
         //         payload: post
         //       }));
+    };
+
+    export const deleteRecipe=(recipeId)=>dispatch=>{
+        
+        console.log("deleteRecipe",recipeId);
+        fetch(proxyUrl+baseUrl+recipeId,{
+            method: 'delete'
+          })
+            .then(res=>res.json()).then(post=>dispatch({
+                type: SAVE_RECIPE,
+                payload: post
+              }));
+    };
+
+    export const fetchCategories=(groupby,search)=>dispatch=>{
+        console.log("fetchCategories")
+        let params="";
+        if(groupby!=null && search!=null)
+            params="/?groupby="+groupby+"&search="+search;
+        fetch(proxyUrl+baseUrl+"Categories"+params)
+            .then(res=>res.json()).then(post=>dispatch({
+                type: FETCH_CATEGORIES,
+                payload: post
+              }));
     };
