@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchRecipe } from '../actions/actions';
+import { fetchRecipe,fetchMisc } from '../actions/actions';
 import Button from '@material-ui/core/Button';
 import Loading from './Loading';
 
@@ -22,17 +22,21 @@ class RecipeForm extends Component{
             Instructions : [],
             Nutrition : [],
             Image : "",
+            MealTypeList:[],
             DietList : [],
+            Misc:[]
         }
         this.onNutritionChange = this.onNutritionChange.bind(this);
         this.onNutritionSave = this.onNutritionSave.bind(this);
+        this.onIngredientChange = this.onIngredientChange.bind(this);
+        this.onIngredientSave = this.onIngredientSave.bind(this);
+        
     }
     componentWillMount() {
-        
+        this.props.fetchMisc();
         if(this.props.match !=null && "oid" in this.props.match.params)
         {
             this.props.fetchRecipe([this.props.match.params.oid]);
-            
         }
         
     }
@@ -46,9 +50,22 @@ class RecipeForm extends Component{
             case "number":  this.setState({[e.target.name] : parseFloat(e.target.value)}); break;
             case "textarea":
             case "text":    this.setState({[e.target.name] : e.target.value}); break;
+            case "select-one":  if(e.target.value=="")
+                                    break;
+                                switch(e.target.name){
+                                    case "MealTypeList": this.state[e.target.name]=[...this.state[e.target.name],...this.getMiscMatchingOption(this.state.misc.mealTypeList,e.target.value)];break;
+                                    case "Categories": this.state[e.target.name]=[...this.state[e.target.name],...this.getMiscMatchingOption(this.state.misc.categoryList,e.target.value)]; break;
+                                    case "DietList": this.state[e.target.name]=[...this.state[e.target.name],...this.getMiscMatchingOption(this.state.misc.dietList,e.target.value)]; break;
+                                }
+                                //this.state[e.target.name].push(e.target.value)
+                                this.setState({[e.target.name] :this.state[e.target.name]}); break;
         }
         
         
+    }
+
+    getMiscMatchingOption(listOfObj,Id){
+        return listOfObj.filter(obj=>obj.Id==Number.parseInt(Id));
     }
     onEnter=e=>{
         let name=e.target.name
@@ -157,7 +174,7 @@ class RecipeForm extends Component{
             switch(element.type){
                 case "number":LocalIngredientList[element.name] =parseFloat(element.value); break;
                 case "text":LocalIngredientList[element.name] =element.value; break;
-
+                case "select-one": LocalIngredientList[element.name] =element.value; break;
             }
         }
         if(LocalIngredientList.Id>0)
@@ -193,6 +210,10 @@ class RecipeForm extends Component{
     render(){
         
         console.log(this.props)
+        // if(this.props.misc!=null)
+        // {
+        //     this.setState({});
+        // }
         if(this.props.posts!=null && this.state.name==="")
             {
                
@@ -209,7 +230,7 @@ class RecipeForm extends Component{
                     NumberOfServings : this.props.posts.NumberOfServings,
                     CookTime : this.props.posts.CookTime,
                     PrepTime: this.props.posts.PrepTime,
-                    Instructions:JSON.parse( this.props.posts.Instructions),
+                    Instructions:this.props.posts.Instructions,
                     Categories : this.props.posts.Categories,
                     Cuisine:this.props.posts.Cuisine,
                     Nutrition : this.props.posts.Nutrition,
@@ -218,6 +239,12 @@ class RecipeForm extends Component{
                     Image:this.props.posts.Image
                 });
                 
+            }
+            if(this.props.misc!=null && this.state.misc==null)
+            {
+                this.setState({
+                    misc:this.props.misc
+                })
             }
         return (
             (this.props.posts==null && false)?
@@ -234,12 +261,21 @@ class RecipeForm extends Component{
                         <div className="section-title">Categories:</div>
                         <div className="tagsArea">
                             {(this.state!=null && this.state.Categories!=null)?this.state.Categories.map((cat,index)=>
-                                    <div key={index} id={cat.Id} className="tagWrapper">{cat.Name} 
+                                    <div key={index} id={cat.id} className="tagWrapper">{cat.Name} 
                                         <span className="tagDelete" onClick={()=>this.deleteFromList(index,"Categories")}>
                                             <i className="material-icons tag-clear">clear</i>
                                         </span>
                                 </div>):""}
-                            <input type="text" className="transparent" name="Categories" onKeyDown={this.onEnter}/>
+                            {/* <input type="text" className="transparent" name="Categories" onKeyDown={this.onEnter}/> */}
+                            <select  className="transparent" name="Categories" onChange={e=>this.onChange(e)}>
+                                <option>Select Options</option>
+                                {
+                                    (this.state.misc!=null)?
+                                        this.state.misc.categoryList.map((cat,index)=>
+                                            ( this.state.Categories.indexOf(cat.Name)<0)?
+                                            <option value={cat.Id}>{cat.Name}</option>:null)
+                                    :""}
+                            </select>
                         </div>
                     </div>
 
@@ -248,15 +284,24 @@ class RecipeForm extends Component{
 
 
                     <div className="item-tags">
-                        <div className="section-title">Tags: </div>
+                        <div className="section-title">Meal Type: </div>
                         <div className="tagsArea">
-                            {(this.state!=null && this.state.tags!=null)?this.state.tags.map((tag,index)=>
-                                <div key={index} className="tagWrapper">{tag.Name} 
-                                    <span className="tagDelete" onClick={()=>this.deleteFromList(index,"tags")}>
+                            {(this.state!=null && this.state.MealTypeList!=null)?this.state.MealTypeList.map((MealType,index)=>
+                                <div key={index} className="tagWrapper">{MealType.Name} 
+                                    <span className="tagDelete" onClick={()=>this.deleteFromList(index,"MealTypeList")}>
                                         <i className="material-icons tag-clear">clear</i>
                                     </span>
                                 </div>):""}
-                            <input type="text" className="transparent" name="tags" onKeyDown={this.onEnter}/>
+                            {/* <input type="text" className="transparent" name="tags" onKeyDown={this.onEnter}/> */}
+                            <select  className="transparent" name="MealTypeList" onChange={e=>this.onChange(e)}>
+                                <option>Select Options</option>
+                                {
+                                    (this.state.misc!=null)?
+                                        this.state.misc.mealTypeList.map((cat,index)=>
+                                            ( this.state.MealTypeList.indexOf(cat.Name)<0)?
+                                            <option value={cat.Id}>{cat.Name}</option>:null)
+                                    :""}
+                            </select>
                         </div>
                     </div>
 
@@ -278,12 +323,18 @@ class RecipeForm extends Component{
                                                     <td >Id:</td><td><input id="nutrition-id" name="Id" type="number" value={this.state.ingredientForm?this.state.ingredientForm.Id:0}/></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Product:</td><td><input id="nutrition-label" name="Product" type="text" value={this.state.ingredientForm?this.state.ingredientForm.Product:""} onChange={this.onNutritionChange}/></td>
+                                                    <td>Product:</td><td><input id="nutrition-label" name="Product" maxlength="30" type="text" value={this.state.ingredientForm?this.state.ingredientForm.Product:""} onChange={this.onIngredientChange}/></td>
                                                 </tr>
                                                
                                                 <tr>
-                                                    <td colSpan="2"><span>Quantity:</span><input id="nutrition-value" name="Quantity" type="number"  value={this.state.ingredientForm?this.state.ingredientForm.Quantity:0} onChange={this.onNutritionChange}/>
-                                                    <span style={{marginLeft:"7px",marginRight:"14px"}}>Units:</span><input id="nutrition-unit" style={{width: "70px"}} name="Units" type="text" max="10"  value={this.state.ingredientForm?this.state.ingredientForm.Units:""} onChange={this.onNutritionChange} /></td>
+                                                    <td colSpan="2"><span>Quantity:</span><input id="nutrition-value" name="Quantity" type="number"  value={this.state.ingredientForm?this.state.ingredientForm.Quantity:0} onChange={this.onIngredientChange}/>
+                                                    <span style={{marginLeft:"7px",marginRight:"14px"}}>Units:</span>
+                                                    <select id="nutrition-unit" style={{width: "70px",display: "inherit"}} name="Units" type="text" max="10"  value={this.state.ingredientForm?this.state.ingredientForm.Units:""} onChange={this.onNutritionChange} >
+                                                        {(this.state.misc!=null)?
+                                                        this.state.misc.units.map((unit)=><option value={unit}>{unit}</option>)
+                                                        :null}
+                                                    </select>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td><Button type="submit">Save</Button></td><td><Button type="reset">Clear</Button></td>
@@ -316,7 +367,7 @@ class RecipeForm extends Component{
                     <span style={{height:"20px",display: "block"}}></span>
                         {(this.state!=null && this.state.Nutrition!=null)?this.state.Nutrition.map((nutr,index)=>
                             <div key={index} className="tagWrapper">
-                                <div onClick={()=>this.onNutritionClick(index,"nutrition")}>{nutr.Label+ " ["+nutr.Code+"] "+nutr.Value+" "+nutr.Unit} </div>
+                                <div onClick={()=>this.onNutritionClick(index,"nutrition")}>{nutr.Label+ " ["+((nutr.Code!="")?nutr.Code:" - ")+"] "+nutr.Value+" "+nutr.Unit} </div>
                                 <span className="tagDelete" onClick={()=>this.deleteFromList(index,"Nutrition")}>
                                     <i className="material-icons tag-clear">clear</i>
                                 </span>
@@ -364,7 +415,16 @@ class RecipeForm extends Component{
                                         <i className="material-icons tag-clear">clear</i>
                                     </span>
                                 </div>):""}
-                            <input type="text" className="transparent" name="DietList" onKeyDown={this.onEnter}/>
+                            {/* <input type="text" className="transparent" name="DietList" onKeyDown={this.onEnter}/> */}
+                            <select  className="transparent" name="DietList" onChange={e=>this.onChange(e)}>
+                                <option>Select Options</option>
+                                {
+                                    (this.state.misc!=null)?
+                                        this.state.misc.dietList.map((cat,index)=>
+                                            ( this.state.DietList.indexOf(cat.Name)<0)?
+                                            <option value={cat.Id}>{cat.Name}</option>:null)
+                                    :""}
+                            </select>
                         </div>
                     </div>
                     <div className="item-submit">
@@ -382,7 +442,7 @@ RecipeForm.propTypes={
 }
 const mapStateToProps = state=>({
     posts: state.posts.recipe,
-    
+    misc:state.posts.misc
     // title : (state.posts.recipe)? state.posts.recipe.name:"",
     // description : (state.posts.recipe)? state.posts.recipe.description:"",
     // ingredients : (state.posts.recipe)? state.posts.recipe.IngredientList:"",
@@ -398,4 +458,4 @@ const mapStateToProps = state=>({
         
     
 });
-export default connect(mapStateToProps,{fetchRecipe})(RecipeForm);
+export default connect(mapStateToProps,{fetchRecipe,fetchMisc})(RecipeForm);

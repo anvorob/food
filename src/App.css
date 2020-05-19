@@ -19,6 +19,7 @@ body{
 }
 a{
   text-decoration: none;
+  color: black;
 }
 
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons");
@@ -54,6 +55,13 @@ a{
   }
 }
 
+.burger-btn {
+  color: white;
+  font-size: 29px!important;
+  position: absolute;
+    right: 0;
+}
+
 .Collection a{
   color: inherit;
   text-shadow: -1px 1px #dedede;
@@ -75,7 +83,7 @@ a{
 .item-ingredients { grid-area: ingredients; }
 .item-steps { grid-area: steps; }
 .item-nutrition { grid-area: nutrition; }
-.item-images { grid-area: images; }
+.item-images { grid-area: images; position: relative; }
 .item-alergens { grid-area: alergens; }
 .item-submit { grid-area: submit; }
 
@@ -112,6 +120,7 @@ a{
 .item-title h1{
   margin-top: 0;
   display: inline-flex;
+  width: 83%;
 }
 .edit-link{
     position: absolute;
@@ -148,6 +157,16 @@ a{
 .recipeDetailsWrapper .tagWrapper{
   padding-right: 4px;
 }
+
+.favourite{
+  display: inline;
+  position: absolute;
+  color: #7b7b7b;
+  right: 11px;
+  background: #c0c0c085;
+  padding: 5px;
+}
+
 .categoryBox{
     display: inline;
     border: 1px solid black;
@@ -162,6 +181,9 @@ a{
   padding: 4px;
   background: white;
   border-radius: 5px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
 }
 
 .item-tags input, .item-categories input, .item-alergens input{
@@ -244,6 +266,12 @@ a{
   border-radius: 3px;
   padding: 7px;
   font-size: 17px;
+}
+.recipeWrapper select{
+  border-radius: 3px;
+  padding: 7px;
+  font-size: 17px;
+  display: block;
 }
 .recipeWrapper input[type=number]
 {
@@ -329,16 +357,6 @@ input:focus{
     background: #3b3b3bed;
 }
 
-.recipesWrapper{
-  /* background: #f2f2f278; */
-  padding: 6px;
-  width: 100%;
-  background: silver;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  height: 100%;
-}
-
 .Collection
 {
   text-align: left;
@@ -407,4 +425,287 @@ input:focus{
 .MuiButtonBase-root{
   max-height: 313px;
   overflow: hidden;
+}
+
+.user{
+  display: inline;
+  position: absolute;
+  background: grey;
+  padding: 0px 10px 0px 10px;
+  border-radius: 0 0 3px 3px;
+  right: 100px;
+  top:50px;
+  min-width: 120px;
+  z-index: 999;
+}
+
+.user ul{
+  list-style: none;
+  padding:0;
+  text-align: right;
+}
+
+.user input{
+  border-width: 0px;
+  border-radius: 3px;
+  padding: 7px;
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.recipesWrapper, .registerFormWrapper{
+  /* background: #f2f2f278; */
+  /* padding: 6px; */
+  width: 100%;
+  background: silver;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  height: 100%;
+  text-shadow: 0.5px 0.5px #acacac;
+}
+
+.registerFormWrapper input{
+  border-width: 0px;
+  border-radius: 3px;
+  padding: 7px;
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.registerFormWrapper .label{
+  text-align: right;
+}
+
+.registerFormWrapper .field{
+  text-align: left;
+}
+.login-labels{
+  margin-right:5px;
+}
+
+.user-bar{
+  position: absolute;
+  display: inline;
+  right: 100px;
+  margin: 9px 10px 9px 0px;
+  color: whitesmoke;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.user-bar ul{
+  list-style: none;
+  display: flex;
+  padding: 0px;
+  margin: 0px;
+  align-items: center;
+}
+.user-bar ul li{
+  margin-right: 10px;
+}
+.user-bar .logo{
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 590px) {
+  /* CSS that should be displayed if width is equal to or less than 800px goes here */
+  .Header{
+    height: fit-content;
+    min-height: 30px;
+  }
+  .link-btn {
+    position: relative;
+  }
+  body{
+    width: 100%;
+    /* background-color: yellowgreen; */
+  }
+
+  .Header-links {
+    height: inherit;
+    display: grid;
+    text-align: left;
+    margin-left: 20px;
+  }
+  .recipeWrapper select{
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .burger-btn {
+    display: block;
+  }
+  .list-item img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .list-item {
+    height: unset;
+    margin-left: 5px;
+  }
+
+  .recipeDetailsWrapper
+  {
+    text-align: left;
+    display: grid;
+    grid-column-gap: 20px;
+    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-areas:
+      'title '
+      'images '
+      'description '
+      'divider1  '
+      'serves '
+      'cookingT '
+      'preparationT '
+      'cuisine '
+      'divider3 '
+      'categories '
+      'alergens  '
+      'divider4 '
+      'steps '
+      'ingredients '
+      'nutrition ';
+    background-color: #e8edf2b3;
+  }
+
+  .recipeWrapper{
+    /* text-align: left; */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-areas:
+      'title'
+      'description'
+      'cuisine'
+      'serves'
+      'cookingT' 
+      'preparationT'
+      'categories'
+      'tags'
+      'alergens'
+      'ingredients'
+      'steps'
+      'nutrition'
+      'images'
+      'submit';
+    background-color: #e8edf2b3;
+    padding: 10px 0px 10px 0px;
+  }
+  .Category {
+    display: inline-table;
+  }
+  .stashedList {
+    padding-left: 0px;
+  }
+  .recipesWrapper{
+    display: table-footer-group;
+  }
+
+  .recipeWrapper textarea{
+    padding: unset;
+  }
+}
+
+
+@media only screen and (min-device-width: 500px) and (max-device-width: 900px) {
+  /* CSS that should be displayed if width is equal to or less than 800px goes here */
+
+  .Header{
+    height: fit-content;
+    min-height: 30px;
+  }
+  .link-btn {
+    position: relative;
+  }
+  .Header-links {
+    height: inherit;
+    display: grid;
+    text-align: left;
+    margin-left: 20px;
+  }
+  .recipe-card {
+    max-width: 45%;
+  }
+  .recipeWrapper select{
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .burger-btn {
+    display: block;
+  }
+
+  .recipeWrapper textarea{
+    padding: unset;
+  }
+
+  body{
+    width: 100%;
+    /* background-color: rebeccapurple; */
+  }
+  .recipesWrapper{
+    display: table-footer-group;
+  }
+
+  .list-item img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .list-item {
+    height: unset;
+    margin-left: 5px;
+  }
+  .Category {
+    display: inline-table;
+}
+  .recipeDetailsWrapper
+  {
+    text-align: left;
+    display: grid;
+    grid-column-gap: 20px;
+    padding: 20px;
+    /* grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); */
+    grid-template-columns: auto auto;
+    grid-template-areas:
+    'title title'
+    'images images'
+    'description description'
+    'divider1 divider1'
+    'serves cookingT '
+    'preparationT cuisine '
+    'divider3 divider3'
+    'categories categories'
+    'alergens alergens'
+    'divider4 divider4 '
+    'steps steps '
+    'ingredients nutrition ';
+    background-color: #e8edf2b3;
+  }
+
+  .recipeWrapper{
+    /* text-align: left; */
+    display: grid;
+    /* grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); */
+    grid-template-columns: auto auto;
+    grid-template-areas:
+    'title title'
+    'description description '
+    'cookingT preparationT'
+    'cuisine serves'
+    'categories  alergens'
+    'ingredients  nutrition'
+    'steps tags'
+    'images images '
+    'submit submit ';
+    background-color: #e8edf2b3;
+    padding: 10px 0px 10px 0px;
+  }
+
+  .stashedList {
+    padding-left: 0px;
+  }
+
 }

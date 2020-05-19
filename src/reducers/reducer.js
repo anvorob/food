@@ -1,4 +1,4 @@
-import {FETCH_RECIPIES,FETCH_RECIPE,SAVE_RECIPE,DELETE_RECIPE,FETCH_CATEGORIES} from '../actions/types';
+import {FETCH_RECIPIES,FETCH_RECIPE,SAVE_RECIPE,DELETE_RECIPE,FETCH_CATEGORIES,FETCH_MISC,FETCH_SEARCH,CREATE_USER,USER_LOGIN,USER_LOGOUT,SET_FAVOURITE} from '../actions/types';
 
 const initialState = {
     
@@ -39,6 +39,43 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 categories: action.payload
+            };
+        case FETCH_MISC:
+            console.log(action);
+            return {
+                ...state,
+                misc: action.payload
+            };
+        case FETCH_SEARCH:
+            console.log(action);
+            return {
+                ...state,
+                search: action.payload
+            };
+        case SET_FAVOURITE:
+            console.log(action);
+            return {
+                ...state,
+                favourite: action.payload
+            };
+            
+        case USER_LOGIN:
+            console.log(action);
+            return {
+                ...state,
+                user: action.payload
+            };
+        case USER_LOGOUT:
+            console.log(action);
+            return {
+                ...state,
+                user: action.payload
+            };
+        case CREATE_USER:
+            console.log(action);
+            return {
+                ...state,
+                user: action.payload
             };
         default:
         return state;

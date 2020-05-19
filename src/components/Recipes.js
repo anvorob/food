@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchRecipies,saveRecipe } from '../actions/actions';
+import { fetchRecipies,saveRecipe,fetchSearch } from '../actions/actions';
 import RecipePreview from './RecipePreview';
 import Loading from './Loading';
 
@@ -17,7 +17,10 @@ listOfRecipes;
         this.props.fetchRecipies();
         //this.props.saveRecipe();
     }
-    
+    onSearchChange=e=>{
+      
+        this.props.fetchSearch(e.target.value)
+      }
     render(){
         
             console.log(this.props);
@@ -26,6 +29,7 @@ listOfRecipes;
         return (
             (this.props.posts!=null)?
             <div className="recipesWrapper">
+                {/* <input type="text" onChange={()=>fetchSearch}/> */}
                 {this.listOfRecipes}
             </div>
             :

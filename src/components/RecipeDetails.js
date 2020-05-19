@@ -1,11 +1,13 @@
 import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchRecipe } from '../actions/actions';
+import { fetchRecipe,setFavourite } from '../actions/actions';
 import Button from '@material-ui/core/Button';
 import Loading from './Loading';
 import { Link } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 class RecipeDetails extends Component{
     
     constructor(){
@@ -25,7 +27,7 @@ class RecipeDetails extends Component{
             Image : "",
             DietList : [],
         }
-        
+        this.onFavouriteClick = this.onFavouriteClick.bind(this)
     }
     componentWillMount() {
         
@@ -36,10 +38,26 @@ class RecipeDetails extends Component{
         }
         
     }
-
+    onFavouriteClick=e=>{
+        if(window.sessionStorage.user!=null)
+        {
+            let user =JSON.parse(window.sessionStorage.user)
+            this.props.setFavourite(this.state.id,user.id, this.state.isFavourite)
+            if(this.state.isFavourite && user.favourite.indexOf(this.state.id)>-1)
+                user.favourite.push(this.state.id)
+            else
+                user.favourite.splice(user.favourite.indexOf(this.state.id),1)
+            
+            sessionStorage.setItem("user", JSON.stringify(user))
+        }
+    }
     componentDidMount(){
         console.log(this.props)
-        
+        if(window.sessionStorage.user!=null){
+            let user =JSON.parse(window.sessionStorage.user)
+            if(user.favourite.indexOf(this.state.id))
+            this.setState({isFavourite:true})
+        }
     }
   
     render(){
@@ -61,7 +79,7 @@ class RecipeDetails extends Component{
                     NumberOfServings : this.props.posts.NumberOfServings,
                     CookTime : this.props.posts.CookTime,
                     PrepTime: this.props.posts.PrepTime,
-                    Instructions:JSON.parse( this.props.posts.Instructions),
+                    Instructions:this.props.posts.Instructions,
                     Categories : this.props.posts.Categories,
                     Cuisine:this.props.posts.Cuisine,
                     Nutrition : this.props.posts.Nutrition,
@@ -77,6 +95,12 @@ class RecipeDetails extends Component{
             <div className="recipeDetailsWrapper">
                 
                     <div className="item-images">
+                        <div className="favourite">
+                            {(this.state.isFavourite)?
+                                <FavoriteIcon onClick={e=>this.onFavouriteClick(e)}/>
+                                :<FavoriteBorderIcon  onClick={e=>this.onFavouriteClick(e)}/>
+                            }
+                        </div>
                         <img src={this.state.Image} />
                     </div>
                     <div className="item-title">
@@ -164,4 +188,4 @@ const mapStateToProps = state=>({
     posts: state.posts.recipe
     
 });
-export default connect(mapStateToProps,{fetchRecipe})(RecipeDetails);
+export default connect(mapStateToProps,{fetchRecipe,setFavourite})(RecipeDetails);

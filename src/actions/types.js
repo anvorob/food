@@ -3,3 +3,10 @@ export const FETCH_RECIPE = 'FETCH_RECIPE';
 export const FETCH_CATEGORIES = 'FETCH_CATEGORIES';
 export const SAVE_RECIPE = 'SAVE_RECIPE';
 export const DELETE_RECIPE = 'DELETE_RECIPE';
+export const FETCH_SEARCH = 'FETCH_SEARCH';
+export const FETCH_MISC = 'FETCH_MISC';
+export const CREATE_USER = 'CREATE_USER';
+export const USER_LOGIN = 'USER_LOGIN';
+export const USER_LOGOUT = 'USER_LOGOUT';
+export const SET_FAVOURITE = 'SET_FAVOURITE';
+

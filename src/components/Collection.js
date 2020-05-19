@@ -33,21 +33,24 @@ class Collection extends Component
             //     categoryList.push(<Category title={key} recipeList={value} />);
             
             for(let [key, value] of Object.entries(this.props.posts.cuisineList)) 
-                cuisineList.push(<div className="list-item">
+            if(value.length>0)
+                cuisineList.push(<div key={key} className="list-item">
                     <Link to={'/collection/cuisine/'+key}>
                         <img src={value[0].image} />
                         <h3>{key}</h3>
                     </Link>
                 </div>);
             for(let [key, value] of Object.entries(this.props.posts.dietList)) 
-                dietList.push(<div className="list-item">
+            if(value.length>0)
+                dietList.push(<div key={key} className="list-item">
                      <Link to={'/collection/diet/'+key}>
                         <img src={value[0].image} />
                         <h3>{key}</h3>
                     </Link>
                 </div>);
             for(let [key, value] of Object.entries(this.props.posts.categoryList)) 
-                categoryList.push(<div className="list-item">
+            if(value.length>0)
+                categoryList.push(<div key={key} className="list-item">
                     <Link  to={'/collection/category/'+key}>
                         <img src={value[0].image} />
                         <h3>{key}</h3>
@@ -59,10 +62,7 @@ class Collection extends Component
             <Loading />
             :
             <div className="Collection">
-                {/* {categoryList}
-                {dietList}
-                {cuisineList} */}
-
+                
                     <div className="collection-Item">
                         <h1>By Cuisines</h1>
                         {cuisineList}
